@@ -1,0 +1,23 @@
+{
+    "require": {
+        "doctrine/dbal": "~2.4",
+        "illuminate/database": "~5.0",
+        "illuminate/events": "~5.0",
+        "illuminate/config": "~5.0",
+        "jeremeamia/superclosure": "~2.0",
+        "symfony/var-dumper": "~2.7",
+        "symfony/finder": "~2.7",
+        "philo/laravel-blade": "3.*"
+    },
+    "autoload": {
+        "files": [
+            "app/Helpers/Helpers.php"
+        ],
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },    
+    "config": {
+        "preferred-install": "dist"
+    }
+}
