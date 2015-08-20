@@ -90,7 +90,8 @@ if (!function_exists('datetime'))
 
     function datetime($time = null, $timezone = null, $reverse = false)
     {
-        $defaultTz = config('app.timezone', 'UTC');
+        $defaultTz = config('app.timezone', 'Asia/Singapore');
+        // $defaultTz = config('app.timezone', 'Asia/Ho_Chi_Minh');
 
         if (!in_array($timezone, timezone_identifiers_list()))
         {
@@ -110,5 +111,91 @@ if (!function_exists('datetime'))
         }
 
         return Carbon::parse($time, $defaultTz); 
+    }
+}
+
+if (!function_exists('prd'))
+{
+    /**
+     * Print the passed variables and end the script.
+     *
+     * @param  mixed
+     * @return void
+     */
+    function prd()
+    {
+        array_map(function($x) { 
+            echo '<pre>';
+            print_r($x); 
+            echo '</pre>';
+        }, func_get_args());
+        die;
+    }
+}
+
+if (!function_exists('vd')) 
+{
+    /**
+     * Dump the passed variables using var_dump and end the script.
+     *
+     * @param  mixed
+     * @return void
+     */
+    function vd()
+    {
+        array_map(function($x) { var_dump($x);die; }, func_get_args());
+    }
+}
+
+if (!function_exists('get_update_rules')) 
+{
+    /**
+     * Get the validation update rules
+     *
+     * @param  array
+     * @return void
+     */
+    function get_update_rules(array $rules)
+    {
+        foreach ($rules as &$rule) 
+        {
+            if (is_array($rule) && !in_array('sometimes', $rule))
+            {                   
+                array_unshift($rule, 'sometimes');
+            }
+            else if (is_string($rule) && !str_contains('sometimes', $rule))
+            {
+                $rule = 'sometimes|' . $rule;
+            }
+        }
+
+        return $rules;
+    }
+}
+
+if (!function_exists('remove_query_string')) 
+{
+    /**
+     * Remove a query string parameter from an URL.
+     *
+     * @param string $url
+     * @param string $varname
+     *
+     * @return string
+     */
+    function remove_query_string($url, $varname)
+    {
+        $parsedUrl = parse_url(html_entity_decode($url));        
+        $query = array();
+
+        if (isset($parsedUrl['query'])) {
+            parse_str($parsedUrl['query'], $query);
+            unset($query[$varname]);
+        }
+
+        $path = isset($parsedUrl['path']) ? $parsedUrl['path'] : '';
+        $query = !empty($query) ? '?'. http_build_query($query) : '';
+
+        return $parsedUrl['scheme']. '://'. $parsedUrl['host']. $path. $query;
     }
 }

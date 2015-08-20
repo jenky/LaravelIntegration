@@ -9,6 +9,7 @@ use Philo\Blade\Blade;
 use App\Core\Config;
 use App\Core\Database;
 use App\Core\Allias;
+use App\Core\Validator;
 
 class Application extends Container
 {
@@ -55,6 +56,11 @@ class Application extends Container
     protected $loadedProviders = [];
 
     /**
+     * Theme option
+     */ 
+    protected $theme;
+
+    /**
      * Initialize configuration.
      */
     public function __construct($basePath)
@@ -91,7 +97,10 @@ class Application extends Container
         $this->registerEventBindings();
         $this->registerDatabaseBindings();
         $this->registerCapsuleBindings();
+        $this->registerValidationBindings();
         $this->registerViewBindings();
+
+        $this->init();
     }
 
     /**
@@ -263,8 +272,23 @@ class Application extends Container
     protected function registerViewBindings()
     {
         $resourcePath = $this->resourcePath;
+
+        // if ($this->theme) $resourcePath .= '/theme/' . $this->theme;
+        if (str_contains($resourcePath, 'catalog'))
+        {
+            $resourcePath .= '/theme/default';
+        }
+
         $this->singleton('view', function () use ($resourcePath) {
             return new Blade($resourcePath . '/template', $resourcePath . '/cache');
+        });
+    }
+
+    protected function registerValidationBindings()
+    {
+        $this->singleton('validator', function () {
+            $validator = new Validator;
+            return $validator->setConnection(app('capsule')->getDatabaseManager());
         });
     }
 
@@ -283,5 +307,16 @@ class Application extends Container
     public function withAliases(array $aliases = [])
     {
         new Allias($aliases);
+    }
+
+    public function init()
+    {
+        $this->make('validator')->getValidator()->extend('sgphone', function($attribute, $value, $parameters) {
+            return (starts_with($value, '6') || starts_with($value, '8'));
+        }, 'The :attribute must starts with :string');
+
+        $this->make('validator')->getValidator()->replacer('sgphone', function($message, $attribute, $rule, $parameters) {
+            return str_replace([':attribute', ':string'], [$attribute, '6 or 8'], $message);
+        });
     }
 }

@@ -26,7 +26,8 @@ class Allias
 	public function loadDefaultAliases(array $aliases)
 	{
 		$aliases += [
-			'Carbon' => Carbon\Carbon::class
+			'Carbon' => Carbon\Carbon::class,
+			'Capsule' => Illuminate\Database\Capsule\Manager::class,
 		];
 
 		static::makeAliases($aliases);
