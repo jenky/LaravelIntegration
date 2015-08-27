@@ -10,6 +10,7 @@ use App\Core\Config;
 use App\Core\Database;
 use App\Core\Allias;
 use App\Core\Validator;
+use App\Core\Hash;
 
 class Application extends Container
 {
@@ -99,6 +100,7 @@ class Application extends Container
         $this->registerCapsuleBindings();
         $this->registerValidationBindings();
         $this->registerViewBindings();
+        $this->registerHashBindings();
 
         $this->init();
     }
@@ -258,9 +260,9 @@ class Application extends Container
      */
     protected function registerCapsuleBindings()
     {
-        new Database();
         $this->singleton('capsule', function () {
-            return new Capsule;
+            $db = new Database($this);
+            return $db->getCapsule();
         });
     }
 
@@ -284,11 +286,29 @@ class Application extends Container
         });
     }
 
+    /**
+     * Register container bindings for the application.
+     *
+     * @return void
+     */
     protected function registerValidationBindings()
     {
         $this->singleton('validator', function () {
-            $validator = new Validator;
+            $validator = new Validator($this);
             return $validator->setConnection(app('capsule')->getDatabaseManager());
+            // return new Validator;
+        });
+    }
+
+    /**
+     * Register container bindings for the application.
+     *
+     * @return void
+     */
+    protected function registerHashBindings()
+    {
+        $this->singleton('hasher', function () {
+            return new Hash;
         });
     }
 

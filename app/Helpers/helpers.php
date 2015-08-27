@@ -77,6 +77,21 @@ if (! function_exists('view')) {
     }
 }
 
+if (! function_exists('auth')) {
+    /**
+     * Get the evaluated view contents for the given view.
+     *
+     * @param  string  $view
+     * @param  array   $data
+     * @param  array   $mergeData
+     * @return \Illuminate\View\View
+     */
+    function auth()
+    {
+        return Container::getInstance()->make('auth');
+    }
+}
+
 if (!function_exists('datetime')) 
 {
     /**
@@ -197,5 +212,19 @@ if (!function_exists('remove_query_string'))
         $query = !empty($query) ? '?'. http_build_query($query) : '';
 
         return $parsedUrl['scheme']. '://'. $parsedUrl['host']. $path. $query;
+    }
+}
+
+if (!function_exists('bcrypt')) 
+{
+    /**
+     * Get the validation update rules
+     *
+     * @param  array
+     * @return void
+     */
+    function bcrypt($value, array $options = [])
+    {
+        return Container::getInstance()->make('hasher')->make($value, $options);
     }
 }

@@ -7,7 +7,8 @@
         "jeremeamia/superclosure": "~2.0",
         "symfony/var-dumper": "~2.7",
         "symfony/finder": "~2.7",
-        "philo/laravel-blade": "3.*"
+        "philo/laravel-blade": "3.*",
+        "hazzard/validation": "~1.0"
     },
     "autoload": {
         "files": [

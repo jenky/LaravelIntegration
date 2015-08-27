@@ -2,15 +2,16 @@
 
 namespace App\Core;
 
+use Illuminate\Container\Container;
 use Hazzard\Validation\Validator as ValidatorFactory;
 
 class Validator
 {
 	protected $validator;
 
-	public function __construct()
+	public function __construct(Container $container = null)
 	{
-		$this->validator = new ValidatorFactory;
+		$this->validator = new ValidatorFactory($container);
 
 		$this->validator->setDefaultLines();
 
